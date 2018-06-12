@@ -1,0 +1,59 @@
+{
+    "app-id" : "io.itch.Wereshift",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "3.28",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "wereshift-run",
+    "finish-args" : [
+        "--device=all",
+        "--device=dri",
+        "--share=ipc",
+        "--share=network",
+        "--socket=pulseaudio",
+        "--socket=wayland",
+        "--socket=x11",
+        "--filesystem=xdg-run/dconf",
+        "--filesystem=~/.config/dconf:ro",
+        "--talk-name=ca.desrt.dconf",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+    ],
+    "modules" : [
+        {
+            "name" : "wereshift",
+            "buildsystem" : "simple",
+            "build-commands" : [
+                "mkdir -p /app/bin",
+                "install -m755 -p wereshift-run /app/bin",
+                "install -m755 -p wereshift /app/bin",
+                "mkdir -p /app/bin/content/entities",
+                "install -m644 -p -t /app/bin/content/entities content/entities/*",
+                "mkdir -p /app/bin/content/fonts",
+                "install -m644 -p -t /app/bin/content/fonts content/fonts/*",
+                "mkdir -p /app/bin/content/projectiles",
+                "install -m644 -p -t /app/bin/content/projectiles content/projectiles/*",
+                "mkdir -p /app/bin/content/terrain",
+                "install -m644 -p -t /app/bin/content/terrain content/terrain/*",
+                "mkdir -p /app/bin/content/ui",
+                "install -m644 -p -t /app/bin/content/ui content/ui/*",
+                "mkdir -p /app/bin/shaders",
+                "install -m644 -p -t /app/bin/shaders shaders/*"
+            ],
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "http://git.pplex.org/attachments/727736c2-f326-48cb-a6da-a14ea66d9cc7",
+                    "sha256" : "ab00e2d0c75df043eaa6726bfc7a678ff15898d17f93a8db921563ff44985dd5",
+                    "strip-components" : 0
+                },
+                {
+                    "type" : "script",
+                    "commands" : [
+                        "cd /app/bin",
+                        "./wereshift"
+                    ],
+                    "dest-filename" : "wereshift-run"
+                }
+            ]
+        }
+    ]
+}
