@@ -1,9 +1,13 @@
 {
-    "app-id" : "io.itch.Wereshift",
+    "app-id" : "dk.eclipsingr.wereshift",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "3.28",
     "sdk" : "org.gnome.Sdk",
     "command" : "wereshift-run",
+    "cleanup-commands": [
+        "rm -rf /app/dmd",
+        "rm -rf /app/lib"
+    ],
     "finish-args" : [
         "--device=all",
         "--device=dri",
@@ -19,9 +23,25 @@
     ],
     "modules" : [
         {
+            "name": "dmd",
+            "buildsystem": "simple",
+            "build-commands": [
+                "cp -R dmd /app/dmd"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "http://downloads.dlang.org/releases/2018/dmd.2.080.1.linux.zip",
+                    "sha256": "5ac28c37c4eb7d29d7b4820b21ed37b1151a475289a6da9f5fa65c83cd02a318",
+                    "dest": "dmd"
+                }
+            ]
+        },
+        {
             "name" : "wereshift",
             "buildsystem" : "simple",
             "build-commands" : [
+                "PATH=\"/app/dmd/linux/bin64:$PATH\" LD_LIBRARY_PATH=/app/dmd/linux/lib64 dub build --build=release",
                 "mkdir -p /app/bin",
                 "install -m755 -p wereshift-run /app/bin",
                 "install -m755 -p wereshift /app/bin",
@@ -38,12 +58,15 @@
                 "mkdir -p /app/bin/shaders",
                 "install -m644 -p -t /app/bin/shaders shaders/*"
             ],
+            "build-options": {
+                "build-args": [
+                    "--share=network"
+                ]
+            },
             "sources" : [
                 {
-                    "type" : "archive",
-                    "url" : "http://git.pplex.org/attachments/727736c2-f326-48cb-a6da-a14ea66d9cc7",
-                    "sha256" : "ab00e2d0c75df043eaa6726bfc7a678ff15898d17f93a8db921563ff44985dd5",
-                    "strip-components" : 0
+                    "type" : "git",
+                    "url" : "http://git.pplex.org/clipsey/wereshift.git"
                 },
                 {
                     "type" : "script",
